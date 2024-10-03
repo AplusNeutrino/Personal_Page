@@ -1,128 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Personal webpage">
-    <title>Your Name - Personal Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
+---
+layout: default
+pagination: 
+  enabled: true
+---
+<div class="home">
 
-        header {
-            background-color: #004d26;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1, h2 {
-            color: #004d26;
-        }
-
-        .profile-section, .skills-section, .contact-section, .blog-section {
-            margin-bottom: 40px;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        ul li {
-            margin-bottom: 10px;
-        }
-
-        .social-links {
-            text-align: center;
-        }
-
-        .social-links a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #004d26;
-        }
-
-        footer {
-            text-align: center;
-            background-color: #004d26;
-            color: white;
-            padding: 10px 0;
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <h1>Your Name</h1>
-    <p>Welcome to my personal website</p>
-</header>
-
-<div class="container">
-    <!-- Personal Introduction -->
-    <section class="profile-section">
-        <h2>About Me</h2>
-        <p>Hello! I'm [Your Name], a passionate [Your Profession or Interest]. I enjoy working on projects that combine creativity and technology. Welcome to my personal space on the web!</p>
-    </section>
-
-    <!-- Education Section -->
-    <section class="education-section">
-        <h2>Education</h2>
-        <ul>
-            <li><strong>Degree:</strong> B.Sc. in Computer Science - [University Name] (Year)</li>
-            <li><strong>Degree:</strong> M.Sc. in Software Engineering - [University Name] (Year)</li>
-        </ul>
-    </section>
-
-    <!-- Skills Section -->
-    <section class="skills-section">
-        <h2>Skills</h2>
-        <ul>
-            <li>Programming Languages: Java, Python, JavaScript</li>
-            <li>Frameworks: Spring Boot, Vue.js, Unity</li>
-            <li>Tools: Git, Docker, MySQL</li>
-        </ul>
-    </section>
-
-    <!-- Contact Information -->
-    <section class="contact-section">
-        <h2>Contact</h2>
-        <p>Email: <a href="mailto:youremail@example.com">youremail@example.com</a></p>
-        <p>Phone: +123 456 7890</p>
-    </section>
-
-    <!-- Blog Section -->
-    <section class="blog-section">
-        <h2>Blog</h2>
-        <p>This is where I share my thoughts, experiences, and updates. Stay tuned for more content!</p>
-        <!-- Blog entries can be added here -->
-    </section>
-
-    <!-- Social Media Links -->
-    <div class="social-links">
-        <h2>Connect with Me</h2>
-        <a href="https://github.com/yourprofile" target="_blank">GitHub</a> |
-        <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a> |
-        <a href="https://twitter.com/yourprofile" target="_blank">Twitter</a>
-    </div>
+<div class="site-header-container {% if site.cover %}has-cover{% endif %}" {% if site.cover %}style="background-image: url({{ site.cover | prepend: site.baseurl }});"{% endif %}>
+  <div class="scrim {% if site.cover %}has-cover{% endif %}">
+    <header class="site-header">
+      <h1 class="title">{{ site.title }}</h1>
+      {% if site.subtitle %}<p class="subtitle">{{ site.subtitle }}</p>{% endif %}
+    </header>
+  </div>
 </div>
 
-<footer>
-    <p>&copy; 2024 Your Name. All Rights Reserved.</p>
-</footer>
+<div class="wrapper">
+<ul class="post-list">
+  {% for post in paginator.posts %}
+  <li>
+    <h2>
+      <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+    </h2>
+    <section class="post-excerpt" itemprop="description">
+      <p>{{ post.content | strip_html | truncatewords: 50 }}</p>
+    </section>
+    <section class="post-meta">
+      <div class="post-date">{{ post.date | date: "%B %-d, %Y" }}</div>
+      <div class="post-categories">
+      {% if post.categories.size > 0 %}in {% for cat in post.categories %}
+        {% if site.jekyll-archives %}
+        <a href="{{ site.baseurl }}/category/{{ cat }}">{{ cat | capitalize }}</a>{% if forloop.last == false %}, {% endif %}
+        {% else %}
+        <a href="{{ site.baseurl }}/posts/#{{ cat }}">{{ cat | capitalize }}</a>{% if forloop.last == false %}, {% endif %}
+        {% endif %}
+      {% endfor %}{% endif %}
+      </div>
+    </section>
+  </li>
+  {% if forloop.last == false %}
+  <hr>
+  {% endif %}
+  {% endfor %}
+</ul>
 
-</body>
-</html>
+<nav class="pagination" role="navigation">
+	<p>
+    {% if paginator.previous_page %}
+			{% if paginator.page == 2 %}
+			<a class="newer-posts" href="{{ site.baseurl }}{{ paginator.previous_page_path }}">
+        <span class="fa-stack fa-lg">
+          <i class="fa fa-square fa-stack-2x"></i>
+          <i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+        </span>
+      </a>
+			{% else %}
+			<a class="newer-posts" href="{{ site.baseurl }}{{ paginator.next_page_path }}">
+				<span class="fa-stack fa-lg">
+					<i class="fa fa-square fa-stack-2x"></i>
+					<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+				</span>
+			</a>
+			{% endif %}
+		{% else %}
+		<span class="fa-stack fa-lg">
+      <i class="fa fa-square fa-stack-2x"></i>
+      <i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+    </span>
+		{% endif %}
+		<span class="page-number">Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
+		{% if paginator.next_page %}
+		<a class="newer-posts" href="{{ site.baseurl }}{{ paginator.next_page_path }}">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-square fa-stack-2x"></i>
+        <i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+		{% else %}
+		<span class="fa-stack fa-lg">
+      <i class="fa fa-square fa-stack-2x"></i>
+      <i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+    </span>
+		{% endif %}
+	</p>
+</nav>
+
+</div>
+</div>
